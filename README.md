@@ -1,4 +1,4 @@
-# Example Project
+# Habit Tracker
 
 A habit tracker built with Expo SDK 54 and React Native 0.81. Track daily habits, count-based goals, streaks, and take on time-boxed challenges.
 
