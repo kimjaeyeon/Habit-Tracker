@@ -40,19 +40,19 @@ export default function ChallengeCompleteScreen() {
       <View style={styles.content}>
         <ThemedText style={styles.trophy}>🏆</ThemedText>
         <ThemedText type="title" style={styles.title}>
-          Challenge Complete!
+          챌린지 완료! 🎉
         </ThemedText>
         {challenge && (
           <>
             <ThemedText style={styles.name}>{challenge.name}</ThemedText>
             <ThemedText style={styles.stats}>
-              {progress?.completedDays} days completed{'\n'}
-              {challenge.habitIds.length} habits tracked
+              {progress?.completedDays}일 동안 해냈어요{'\n'}
+              습관 {challenge.habitIds.length}개 완주
             </ThemedText>
           </>
         )}
         <Pressable style={[styles.button, { backgroundColor: tint }]} onPress={handleContinue}>
-          <ThemedText style={[styles.buttonLabel, { color: buttonTextColor }]}>Continue</ThemedText>
+          <ThemedText style={[styles.buttonLabel, { color: buttonTextColor }]}>계속</ThemedText>
         </Pressable>
       </View>
       <Confetti active={confetti} onComplete={() => setConfetti(false)} />

@@ -71,9 +71,9 @@ export default function ManageScreen() {
       removeHabit(id);
       return;
     }
-    Alert.alert('Remove Habit', `Delete "${habitName}"?`, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => removeHabit(id) },
+    Alert.alert('습관 삭제', `"${habitName}"을(를) 삭제할까요?`, [
+      { text: '취소', style: 'cancel' },
+      { text: '삭제', style: 'destructive', onPress: () => removeHabit(id) },
     ]);
   };
 
@@ -89,7 +89,7 @@ export default function ManageScreen() {
       if (Platform.OS !== 'web') {
         const granted = await requestPermissions();
         if (!granted) {
-          Alert.alert('Permissions needed', 'Enable notifications in device settings.');
+          Alert.alert('알림 권한이 필요해요', '기기 설정에서 알림을 켜주세요.');
           return;
         }
       }
@@ -163,7 +163,7 @@ export default function ManageScreen() {
         {/* ── Add Habit ── */}
         <View style={styles.addSection}>
           <ThemedText type="defaultSemiBold" style={styles.sectionLabel}>
-            Pick an icon
+            아이콘을 골라주세요
           </ThemedText>
           <View style={styles.emojiRow}>
             {EMOJI_OPTIONS.map((emoji) => (
@@ -186,7 +186,7 @@ export default function ManageScreen() {
           </View>
 
           <ThemedText type="defaultSemiBold" style={styles.sectionLabel}>
-            Habit type
+            습관 유형
           </ThemedText>
           <View style={styles.typeRow}>
             <Pressable
@@ -203,7 +203,7 @@ export default function ManageScreen() {
                   habitType === 'daily' && { color: buttonTextColor },
                 ]}
               >
-                Daily ✓
+                매일 ✓
               </ThemedText>
             </Pressable>
             <Pressable
@@ -220,14 +220,14 @@ export default function ManageScreen() {
                   habitType === 'quantity' && { color: buttonTextColor },
                 ]}
               >
-                Count #
+                횟수
               </ThemedText>
             </Pressable>
           </View>
 
           {habitType === 'quantity' && (
             <View style={styles.targetRow}>
-              <ThemedText style={styles.targetLabel}>Daily target:</ThemedText>
+              <ThemedText style={styles.targetLabel}>하루 목표:</ThemedText>
               <TextInput
                 style={[styles.targetInput, { color: textColor, borderColor: inputBorder }]}
                 value={targetCount}
@@ -239,12 +239,12 @@ export default function ManageScreen() {
           )}
 
           <ThemedText type="defaultSemiBold" style={styles.sectionLabel}>
-            Habit name
+            습관 이름
           </ThemedText>
           <View style={styles.inputRow}>
             <TextInput
               style={[styles.input, { color: textColor, borderColor: inputBorder }]}
-              placeholder="e.g. Morning Run"
+              placeholder="예: 아침 달리기"
               placeholderTextColor="#999"
               value={name}
               onChangeText={setName}
@@ -260,7 +260,7 @@ export default function ManageScreen() {
               onPress={handleAdd}
             >
               <ThemedText style={[styles.addButtonText, { color: buttonTextColor }]}>
-                Add
+                추가
               </ThemedText>
             </Pressable>
           </View>
@@ -268,7 +268,7 @@ export default function ManageScreen() {
 
         {/* ── Your Habits ── */}
         <ThemedText type="defaultSemiBold" style={styles.sectionLabel}>
-          Your habits
+          내 습관
         </ThemedText>
         <View style={styles.habitList}>
           {habits.map((habit) => (
@@ -282,7 +282,7 @@ export default function ManageScreen() {
                   <ThemedText style={styles.habitName}>{habit.name}</ThemedText>
                   <View style={styles.habitMeta}>
                     {habit.type === 'quantity' && (
-                      <ThemedText style={styles.metaText}>{habit.targetCount}x/day</ThemedText>
+                      <ThemedText style={styles.metaText}>하루 {habit.targetCount}회</ThemedText>
                     )}
                     {habit.reminderEnabled && (
                       <ThemedText style={styles.metaText}>
@@ -307,7 +307,7 @@ export default function ManageScreen() {
               </View>
               {editingReminderId === habit.id && (
                 <View style={[styles.reminderRow, { borderTopWidth: 1, borderTopColor: inputBorder }]}>
-                  <ThemedText style={styles.reminderLabel}>Remind at</ThemedText>
+                  <ThemedText style={styles.reminderLabel}>알림 시각</ThemedText>
                   <Pressable
                     onPress={() => handleAdjustHour(habit.id, -1)}
                     style={[styles.timeBtn, { borderColor: inputBorder }]}
@@ -327,7 +327,7 @@ export default function ManageScreen() {
                     onPress={() => handleConfirmReminder(habit.id)}
                     style={[styles.confirmBtn, { backgroundColor: tint }]}
                   >
-                    <ThemedText style={[styles.confirmBtnText, { color: buttonTextColor }]}>Set</ThemedText>
+                    <ThemedText style={[styles.confirmBtnText, { color: buttonTextColor }]}>설정</ThemedText>
                   </Pressable>
                 </View>
               )}
@@ -335,12 +335,12 @@ export default function ManageScreen() {
           ))}
         </View>
         {habits.length === 0 && (
-          <ThemedText style={styles.emptyText}>No habits yet — add one above!</ThemedText>
+          <ThemedText style={styles.emptyText}>아직 습관이 없어요 — 위에서 하나 추가해볼까요?</ThemedText>
         )}
 
         {/* ── Challenges ── */}
         <ThemedText type="defaultSemiBold" style={[styles.sectionLabel, { marginTop: 28 }]}>
-          Challenges
+          챌린지
         </ThemedText>
         {activeChallenge && !activeChallenge.isComplete ? (
           <View style={[styles.challengeStatus, { backgroundColor: tint + '15' }]}>
@@ -348,19 +348,19 @@ export default function ManageScreen() {
               🔥 {activeChallenge.name}
             </ThemedText>
             <ThemedText style={styles.challengeActiveSub}>
-              {challengeProgress?.completedDays} / {challengeProgress?.totalDays} days complete
+              {challengeProgress?.totalDays}일 중 {challengeProgress?.completedDays}일 완료
             </ThemedText>
           </View>
         ) : (
           <View style={[styles.challengeForm, { backgroundColor: cardBg }]}>
             <TextInput
               style={[styles.input, { color: textColor, borderColor: inputBorder, marginBottom: 12 }]}
-              placeholder="Challenge name"
+              placeholder="챌린지 이름"
               placeholderTextColor="#999"
               value={challengeName}
               onChangeText={setChallengeName}
             />
-            <ThemedText style={styles.formLabel}>Duration</ThemedText>
+            <ThemedText style={styles.formLabel}>기간</ThemedText>
             <View style={styles.durationRow}>
               {[3, 7, 14, 30].map((d) => (
                 <Pressable
@@ -377,12 +377,12 @@ export default function ManageScreen() {
                       challengeDuration === d && { color: buttonTextColor },
                     ]}
                   >
-                    {d}d
+                    {d}일
                   </ThemedText>
                 </Pressable>
               ))}
             </View>
-            <ThemedText style={styles.formLabel}>Include habits</ThemedText>
+            <ThemedText style={styles.formLabel}>포함할 습관</ThemedText>
             {habits.map((h) => {
               const picked = challengeHabitIds.includes(h.id);
               return (
@@ -421,7 +421,7 @@ export default function ManageScreen() {
               disabled={!challengeName.trim() || challengeHabitIds.length === 0}
             >
               <ThemedText style={[styles.addButtonText, { color: buttonTextColor }]}>
-                Start Challenge
+                챌린지 시작
               </ThemedText>
             </Pressable>
           </View>
@@ -429,7 +429,7 @@ export default function ManageScreen() {
 
         {/* ── Dev Tools ── */}
         <ThemedText type="defaultSemiBold" style={[styles.sectionLabel, { marginTop: 28 }]}>
-          Developer Tools
+          개발자 도구
         </ThemedText>
         <View style={[styles.devTools, { backgroundColor: cardBg }]}>
           <Pressable
@@ -437,27 +437,27 @@ export default function ManageScreen() {
             onPress={handleSimulateDays}
           >
             <ThemedText style={styles.devBtnText}>
-              Simulate Full Challenge Completion
+              전체 챌린지 완료 시뮬레이션
             </ThemedText>
           </Pressable>
           <Pressable
             style={[styles.devBtn, { borderColor: inputBorder }]}
             onPress={handleForceComplete}
           >
-            <ThemedText style={styles.devBtnText}>Force Complete Challenge</ThemedText>
+            <ThemedText style={styles.devBtnText}>챌린지 강제 완료</ThemedText>
           </Pressable>
           <Pressable
             style={[styles.devBtn, { borderColor: inputBorder }]}
             onPress={handleResetOnboarding}
           >
-            <ThemedText style={styles.devBtnText}>Reset Onboarding</ThemedText>
+            <ThemedText style={styles.devBtnText}>온보딩 초기화</ThemedText>
           </Pressable>
           <Pressable
             style={[styles.devBtn, { borderColor: inputBorder }]}
             onPress={handleClearData}
           >
             <ThemedText style={[styles.devBtnText, { color: '#e74c3c' }]}>
-              Clear All Data
+              모든 데이터 삭제
             </ThemedText>
           </Pressable>
         </View>

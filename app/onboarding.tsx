@@ -9,21 +9,21 @@ import { useChallenges } from '@/context/challenges';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 const SUGGESTED = [
-  { name: 'Exercise', emoji: '🏃', type: 'daily' as HabitType, target: 1 },
-  { name: 'Read', emoji: '📚', type: 'daily' as HabitType, target: 1 },
-  { name: 'Meditate', emoji: '🧘', type: 'daily' as HabitType, target: 1 },
-  { name: 'Drink Water', emoji: '💧', type: 'quantity' as HabitType, target: 8 },
-  { name: 'Journal', emoji: '✍️', type: 'daily' as HabitType, target: 1 },
-  { name: 'Walk', emoji: '🚶', type: 'daily' as HabitType, target: 1 },
-  { name: 'Sleep 8hrs', emoji: '😴', type: 'daily' as HabitType, target: 1 },
-  { name: 'Healthy Meal', emoji: '🥗', type: 'quantity' as HabitType, target: 3 },
+  { name: '운동', emoji: '🏃', type: 'daily' as HabitType, target: 1 },
+  { name: '독서', emoji: '📚', type: 'daily' as HabitType, target: 1 },
+  { name: '명상', emoji: '🧘', type: 'daily' as HabitType, target: 1 },
+  { name: '물 마시기', emoji: '💧', type: 'quantity' as HabitType, target: 8 },
+  { name: '일기', emoji: '✍️', type: 'daily' as HabitType, target: 1 },
+  { name: '산책', emoji: '🚶', type: 'daily' as HabitType, target: 1 },
+  { name: '8시간 수면', emoji: '😴', type: 'daily' as HabitType, target: 1 },
+  { name: '건강한 식사', emoji: '🥗', type: 'quantity' as HabitType, target: 3 },
 ];
 
 const HOW_IT_WORKS = [
-  { emoji: '📋', title: 'Create Habits', desc: 'Add daily check-ins or counted goals like "drink 8 glasses of water"' },
-  { emoji: '🔥', title: 'Take Challenges', desc: 'Push yourself with 3, 7, or 30-day streaks and earn achievements' },
-  { emoji: '📊', title: 'Track Progress', desc: 'See your streaks, consistency charts, and activity history' },
-  { emoji: '🔔', title: 'Stay on Track', desc: 'Set personalized reminders for each habit at the time that works for you' },
+  { emoji: '📋', title: '습관 만들기', desc: '매일 체크하거나 "물 8잔 마시기"처럼 횟수 목표를 세워보세요' },
+  { emoji: '🔥', title: '챌린지 도전', desc: '3일, 7일, 30일 연속에 도전하고 성취를 모아보세요' },
+  { emoji: '📊', title: '진행 확인', desc: '연속 기록과 꾸준함, 활동 기록을 한눈에 확인해요' },
+  { emoji: '🔔', title: '꾸준히 유지', desc: '습관마다 원하는 시간에 맞춤 알림을 받아보세요' },
 ];
 
 export default function OnboardingScreen() {
@@ -49,7 +49,7 @@ export default function OnboardingScreen() {
       const h = addHabit(s.name, s.emoji, s.type, s.target);
       ids.push(h.id);
     }
-    if (ids.length > 0) createChallenge('3-Day Kickstart', ids, 3);
+    if (ids.length > 0) createChallenge('3일 킥스타트', ids, 3);
     await AsyncStorage.setItem('onboarding_complete', 'true');
     router.replace('/(tabs)');
   };
@@ -66,14 +66,14 @@ export default function OnboardingScreen() {
         <View style={styles.centered}>
           <ThemedText style={styles.bigEmoji}>✨</ThemedText>
           <ThemedText type="title" style={styles.title}>
-            Build Better Habits
+            오늘부터, 더 나은 나로
           </ThemedText>
           <ThemedText style={styles.subtitle}>
-            Track your daily habits, build streaks, and become the best version of yourself.
+            매일의 습관을 기록하고 연속 기록을 쌓으며, 더 나은 나를 만들어가요.
           </ThemedText>
           <Pressable style={[styles.primary, { backgroundColor: tint }]} onPress={() => setStep(1)}>
             <ThemedText style={[styles.primaryText, { color: buttonTextColor }]}>
-              Get Started
+              지금 시작해볼까요?
             </ThemedText>
           </Pressable>
         </View>
@@ -87,7 +87,7 @@ export default function OnboardingScreen() {
       <ThemedView style={styles.container}>
         <ScrollView contentContainerStyle={styles.howScroll}>
           <ThemedText type="title" style={styles.stepTitle}>
-            How It Works
+            이렇게 사용해요
           </ThemedText>
           <View style={styles.howList}>
             {HOW_IT_WORKS.map((item, i) => (
@@ -103,11 +103,11 @@ export default function OnboardingScreen() {
         </ScrollView>
         <View style={styles.bottom}>
           <Pressable onPress={skip}>
-            <ThemedText style={[styles.skip, { color: tint }]}>Skip</ThemedText>
+            <ThemedText style={[styles.skip, { color: tint }]}>건너뛰기</ThemedText>
           </Pressable>
           <Pressable style={[styles.primary, { backgroundColor: tint }]} onPress={() => setStep(2)}>
             <ThemedText style={[styles.primaryText, { color: buttonTextColor }]}>
-              Continue
+              계속
             </ThemedText>
           </Pressable>
         </View>
@@ -121,10 +121,10 @@ export default function OnboardingScreen() {
       <ThemedView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scroll}>
           <ThemedText type="title" style={styles.stepTitle}>
-            Choose Your Habits
+            어떤 습관을 시작해볼까요?
           </ThemedText>
           <ThemedText style={styles.subtitle}>
-            Pick at least 3 habits to start your journey.
+            최소 3개를 골라 시작해봐요.
           </ThemedText>
           <View style={styles.grid}>
             {SUGGESTED.map((h, i) => {
@@ -142,7 +142,7 @@ export default function OnboardingScreen() {
                   <ThemedText style={styles.cardEmoji}>{h.emoji}</ThemedText>
                   <ThemedText style={styles.cardName}>{h.name}</ThemedText>
                   {h.type === 'quantity' && (
-                    <ThemedText style={styles.cardType}>{h.target}x/day</ThemedText>
+                    <ThemedText style={styles.cardType}>하루 {h.target}회</ThemedText>
                   )}
                 </Pressable>
               );
@@ -151,7 +151,7 @@ export default function OnboardingScreen() {
         </ScrollView>
         <View style={styles.bottom}>
           <Pressable onPress={skip}>
-            <ThemedText style={[styles.skip, { color: tint }]}>Skip</ThemedText>
+            <ThemedText style={[styles.skip, { color: tint }]}>건너뛰기</ThemedText>
           </Pressable>
           <Pressable
             style={[styles.primary, { backgroundColor: tint }, selected.length < 3 && styles.dim]}
@@ -159,7 +159,7 @@ export default function OnboardingScreen() {
             disabled={selected.length < 3}
           >
             <ThemedText style={[styles.primaryText, { color: buttonTextColor }]}>
-              Continue ({selected.length}/3+)
+              계속 ({selected.length}/3+)
             </ThemedText>
           </Pressable>
         </View>
@@ -173,14 +173,14 @@ export default function OnboardingScreen() {
       <View style={styles.centered}>
         <ThemedText style={styles.bigEmoji}>🔥</ThemedText>
         <ThemedText type="title" style={styles.title}>
-          3-Day Challenge
+          3일 챌린지
         </ThemedText>
         <ThemedText style={styles.subtitle}>
-          Complete all your habits for 3 days to earn your first achievement. Ready?
+          3일 동안 모든 습관을 완료하고 첫 성취를 얻어봐요. 준비됐나요?
         </ThemedText>
         <Pressable style={[styles.primary, { backgroundColor: tint }]} onPress={finish}>
           <ThemedText style={[styles.primaryText, { color: buttonTextColor }]}>
-            Start Challenge
+            챌린지 시작
           </ThemedText>
         </Pressable>
       </View>

@@ -49,10 +49,10 @@ export default function TodayScreen() {
     }
   }, [justCompletedId]);
 
-  const dateStr = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
+  const dateStr = new Date().toLocaleDateString('ko-KR', {
     month: 'long',
     day: 'numeric',
+    weekday: 'long',
   });
 
   const tint = useThemeColor({}, 'tint');
@@ -109,7 +109,7 @@ export default function TodayScreen() {
             <View style={styles.challengeHeader}>
               <ThemedText style={styles.challengeTitle}>🔥 {activeChallenge.name}</ThemedText>
               <ThemedText style={styles.challengeCount}>
-                {challengeProgress.completedDays} / {challengeProgress.totalDays} days
+                {challengeProgress.totalDays}일 중 {challengeProgress.completedDays}일
               </ThemedText>
             </View>
             <View style={styles.challengeDots}>
@@ -136,14 +136,14 @@ export default function TodayScreen() {
             />
           </View>
           <ThemedText style={styles.progressText}>
-            {completedCount} of {total} complete
+            {total}개 중 {completedCount}개 완료
           </ThemedText>
         </View>
 
         {allDone && (
           <View style={styles.celebration}>
             <ThemedText style={styles.celebrationEmoji}>🎉</ThemedText>
-            <ThemedText style={styles.celebrationText}>All done for today!</ThemedText>
+            <ThemedText style={styles.celebrationText}>오늘도 다 해냈어요! 🎉</ThemedText>
           </View>
         )}
 
@@ -223,7 +223,7 @@ export default function TodayScreen() {
           <View style={styles.empty}>
             <ThemedText style={styles.emptyEmoji}>📋</ThemedText>
             <ThemedText style={styles.emptyText}>
-              No habits yet.{'\n'}Head to the Manage tab to add some!
+              아직 습관이 없어요.{'\n'}관리 탭에서 하나 추가해볼까요?
             </ThemedText>
           </View>
         )}

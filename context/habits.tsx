@@ -38,11 +38,11 @@ const STORAGE_HABITS = 'habits';
 const STORAGE_COMPLETIONS = 'completions';
 
 const DEFAULT_HABITS: Habit[] = [
-  { id: '1', name: 'Exercise', emoji: '🏃', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
-  { id: '2', name: 'Read', emoji: '📚', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
-  { id: '3', name: 'Meditate', emoji: '🧘', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
-  { id: '4', name: 'Drink Water', emoji: '💧', type: 'quantity', targetCount: 8, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
-  { id: '5', name: 'Sleep 8hrs', emoji: '😴', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
+  { id: '1', name: '운동', emoji: '🏃', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
+  { id: '2', name: '독서', emoji: '📚', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
+  { id: '3', name: '명상', emoji: '🧘', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
+  { id: '4', name: '물 마시기', emoji: '💧', type: 'quantity', targetCount: 8, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
+  { id: '5', name: '8시간 수면', emoji: '😴', type: 'daily', targetCount: 1, createdAt: '2026-01-01', reminderEnabled: false, reminderHour: 9, reminderMinute: 0 },
 ];
 
 function getToday(): string {

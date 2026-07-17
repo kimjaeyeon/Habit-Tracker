@@ -19,7 +19,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today',
+          title: '오늘',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="checkmark.circle.fill" color={color} />
           ),
@@ -28,7 +28,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="history"
         options={{
-          title: 'History',
+          title: '기록',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="chart.bar.fill" color={color} />
           ),
@@ -37,7 +37,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Manage',
+          title: '관리',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="slider.horizontal.3" color={color} />
           ),

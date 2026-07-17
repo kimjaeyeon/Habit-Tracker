@@ -44,29 +44,29 @@ export default function HistoryScreen() {
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={[styles.scroll, { paddingTop: insets.top + 16 }]} showsVerticalScrollIndicator={false}>
         <ThemedText type="title" style={styles.title}>
-          History
+          기록
         </ThemedText>
 
         <View style={styles.statsRow}>
           <View style={[styles.stat, { backgroundColor: cardBg }]}>
             <ThemedText style={styles.statEmoji}>🔥</ThemedText>
             <ThemedText style={styles.statVal}>{bestCurrent}</ThemedText>
-            <ThemedText style={styles.statLabel} numberOfLines={1}>Streak</ThemedText>
+            <ThemedText style={styles.statLabel} numberOfLines={1}>연속</ThemedText>
           </View>
           <View style={[styles.stat, { backgroundColor: cardBg }]}>
             <ThemedText style={styles.statEmoji}>⭐</ThemedText>
             <ThemedText style={styles.statVal}>{bestEver}</ThemedText>
-            <ThemedText style={styles.statLabel} numberOfLines={1}>Best</ThemedText>
+            <ThemedText style={styles.statLabel} numberOfLines={1}>최고</ThemedText>
           </View>
           <View style={[styles.stat, { backgroundColor: cardBg }]}>
             <ThemedText style={styles.statEmoji}>📊</ThemedText>
             <ThemedText style={styles.statVal}>{Math.round(overall * 100)}%</ThemedText>
-            <ThemedText style={styles.statLabel} numberOfLines={1}>{period}d avg</ThemedText>
+            <ThemedText style={styles.statLabel} numberOfLines={1}>{period}일 평균</ThemedText>
           </View>
         </View>
 
         <ThemedText type="defaultSemiBold" style={styles.section}>
-          Activity
+          활동
         </ThemedText>
         <View style={[styles.card, { backgroundColor: cardBg }]}>
           <CalendarHeatmap
@@ -77,7 +77,7 @@ export default function HistoryScreen() {
 
         <View style={styles.periodHeader}>
           <ThemedText type="defaultSemiBold" style={styles.section}>
-            Per-Habit Consistency
+            습관별 꾸준함
           </ThemedText>
           <View style={styles.toggleRow}>
             {([7, 30] as const).map((d) => (
@@ -89,7 +89,7 @@ export default function HistoryScreen() {
                 <ThemedText
                   style={[styles.toggleText, period === d && { color: buttonTextColor }]}
                 >
-                  {d}d
+                  {d}일
                 </ThemedText>
               </Pressable>
             ))}
@@ -99,7 +99,7 @@ export default function HistoryScreen() {
           {habits.length > 0 ? (
             <ConsistencyChart habits={habits} completions={completions} days={period} />
           ) : (
-            <ThemedText style={styles.empty}>Add habits to see consistency data.</ThemedText>
+            <ThemedText style={styles.empty}>습관을 추가하면 꾸준함을 확인할 수 있어요.</ThemedText>
           )}
         </View>
       </ScrollView>

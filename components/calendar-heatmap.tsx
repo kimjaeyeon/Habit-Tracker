@@ -41,7 +41,7 @@ export function CalendarHeatmap({ completions, habits }: Props) {
           if (d === 0 && date.getMonth() !== lastMonth) {
             lastMonth = date.getMonth();
             months.push({
-              label: date.toLocaleDateString('en-US', { month: 'short' }),
+              label: date.toLocaleDateString('ko-KR', { month: 'short' }),
               col: w,
             });
           }
@@ -69,7 +69,7 @@ export function CalendarHeatmap({ completions, habits }: Props) {
     return '#216e39';
   };
 
-  const DAY_LABELS = ['', 'M', '', 'W', '', 'F', ''];
+  const DAY_LABELS = ['', '월', '', '수', '', '금', ''];
 
   return (
     <View style={styles.root}>
