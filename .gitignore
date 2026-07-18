@@ -41,3 +41,8 @@ app-example
 # generated native folders
 /ios
 /android
+
+# tooling / session artifacts
+.omc/
+.playwright-mcp/
+habit-tracker-web.png

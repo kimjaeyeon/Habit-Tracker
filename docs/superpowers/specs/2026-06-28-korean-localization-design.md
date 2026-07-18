@@ -1,5 +1,11 @@
 # 한국어화 설계 (Korean Localization Spec)
 
+> ⚠️ **[대체됨 / SUPERSEDED]** 이 문서는 **직역판**이다. 2026-07-17 딥 인터뷰에서
+> 톤을 "친근·따뜻 응원"으로 확정하며 **감성 현지화판으로 개정**되었다. 실제 구현은
+> 아래 문서를 따를 것:
+> `docs/superpowers/specs/2026-07-17-korean-localization-tone-revision.md`
+> (이 문서는 이력 보존용으로만 유지)
+
 작성일: 2026-06-28
 대상: habit-tracker (Expo SDK 54 / React Native)
 구현: **Codex** (이 문서는 설계 산출물이며, 실제 코드 수정은 Codex가 수행)

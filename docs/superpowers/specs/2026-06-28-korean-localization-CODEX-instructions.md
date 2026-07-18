@@ -1,5 +1,9 @@
 # Codex 작업 지침서 — 한국어화 구현
 
+> ⚠️ **[대체됨 / SUPERSEDED]** 직역판 지침이다. **사용하지 말 것.**
+> 최신 감성 톤 지침을 따를 것:
+> `docs/superpowers/specs/2026-07-17-korean-localization-CODEX-instructions.md`
+
 이 문서는 **Codex가 실제 코드 수정을 수행하기 위한 실행 지침**이다.
 번역 대상 전체 표(파일별 영→한)는 아래 설계 스펙에 있으니 **반드시 함께 열어두고 작업**한다:
 
