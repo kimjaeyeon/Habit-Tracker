@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack, router } from 'expo-router';
+import { Stack, router, useSegments, type Href } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { HabitProvider } from '@/context/habits';
 import { ChallengeProvider } from '@/context/challenges';
+import { AuthProvider, useAuth } from '@/context/auth';
+import { OnboardingProvider, useOnboarding } from '@/context/onboarding';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -15,37 +16,45 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    AsyncStorage.getItem('onboarding_complete').then((v) => {
-      setOnboardingDone(v === 'true');
-    });
-  }, []);
-
-  if (onboardingDone === null) return null;
-
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <HabitProvider>
-        <ChallengeProvider>
-          <RootStack needsOnboarding={!onboardingDone} />
-          <StatusBar style="auto" />
-        </ChallengeProvider>
-      </HabitProvider>
+      <AuthProvider>
+        <OnboardingProvider>
+          <HabitProvider>
+            <ChallengeProvider>
+              <RootStack />
+              <StatusBar style="auto" />
+            </ChallengeProvider>
+          </HabitProvider>
+        </OnboardingProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
 
-function RootStack({ needsOnboarding }: { needsOnboarding: boolean }) {
+function RootStack() {
+  const { session, loading } = useAuth();
+  const { completed: onboardingDone, loading: onboardingLoading } = useOnboarding();
+  const segments = useSegments();
+
   useEffect(() => {
-    if (needsOnboarding) {
+    if (loading || onboardingLoading) return;
+    const inAuthGroup = (segments[0] as string) === '(auth)';
+    const inOnboarding = segments[0] === 'onboarding';
+    if (!session && !inAuthGroup) {
+      router.replace('/(auth)/sign-in' as Href);
+    } else if (session && inAuthGroup) {
+      router.replace(onboardingDone ? '/(tabs)' : '/onboarding');
+    } else if (session && !onboardingDone && !inOnboarding) {
       router.replace('/onboarding');
     }
-  }, [needsOnboarding]);
+  }, [loading, onboardingDone, onboardingLoading, segments, session]);
+
+  if (loading || onboardingLoading) return null;
 
   return (
     <Stack>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
       <Stack.Screen

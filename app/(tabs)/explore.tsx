@@ -13,6 +13,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useHabits, type HabitType } from '@/context/habits';
 import { useChallenges } from '@/context/challenges';
+import { useAuth } from '@/context/auth';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import {
   requestPermissions,
@@ -32,6 +33,7 @@ function formatTime(h: number, m: number) {
 export default function ManageScreen() {
   const { habits, addHabit, removeHabit, updateHabit, simulateCompletions } = useHabits();
   const { activeChallenge, createChallenge, getChallengeProgress, forceComplete } = useChallenges();
+  const { user, signOut } = useAuth();
 
   const [name, setName] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState(EMOJI_OPTIONS[0]);
@@ -144,6 +146,20 @@ export default function ManageScreen() {
   const handleClearData = async () => {
     await AsyncStorage.clear();
     if (Platform.OS === 'web') window.location.reload();
+  };
+
+  const handleSignOut = () => {
+    const performSignOut = () => {
+      signOut().catch(() => Alert.alert('로그아웃하지 못했어요', '잠시 후 다시 시도해 주세요.'));
+    };
+    if (Platform.OS === 'web') {
+      if (window.confirm('로그아웃할까요?')) performSignOut();
+      return;
+    }
+    Alert.alert('로그아웃할까요?', '이 기기에서 계정 연결이 해제돼요.', [
+      { text: '취소', style: 'cancel' },
+      { text: '로그아웃', style: 'destructive', onPress: performSignOut },
+    ]);
   };
 
   const challengeProgress =
@@ -427,6 +443,23 @@ export default function ManageScreen() {
           </View>
         )}
 
+        <ThemedText type="defaultSemiBold" style={[styles.sectionLabel, { marginTop: 28 }]}>
+          계정
+        </ThemedText>
+        <View style={[styles.accountCard, { backgroundColor: cardBg }]}>
+          <View style={styles.accountInfo}>
+            <ThemedText style={styles.accountLabel}>로그인한 이메일</ThemedText>
+            <ThemedText style={styles.accountEmail}>{user?.email}</ThemedText>
+          </View>
+          <Pressable
+            accessibilityRole="button"
+            onPress={handleSignOut}
+            style={[styles.signOutButton, { borderColor: inputBorder }]}
+          >
+            <ThemedText style={styles.signOutText}>로그아웃</ThemedText>
+          </Pressable>
+        </View>
+
         {/* ── Dev Tools ── */}
         <ThemedText type="defaultSemiBold" style={[styles.sectionLabel, { marginTop: 28 }]}>
           개발자 도구
@@ -588,4 +621,10 @@ const styles = StyleSheet.create({
   devTools: { padding: 16, borderRadius: 14, gap: 8, marginBottom: 20 },
   devBtn: { paddingVertical: 12, borderRadius: 10, borderWidth: 1, alignItems: 'center' as const },
   devBtnText: { fontSize: 14 },
+  accountCard: { padding: 16, borderRadius: 14, gap: 16 },
+  accountInfo: { gap: 3 },
+  accountLabel: { fontSize: 13, opacity: 0.5 },
+  accountEmail: { fontSize: 16, fontWeight: '600' as const },
+  signOutButton: { paddingVertical: 11, borderRadius: 10, borderWidth: 1, alignItems: 'center' as const },
+  signOutText: { fontSize: 14, color: '#d64545', fontWeight: '600' as const },
 });

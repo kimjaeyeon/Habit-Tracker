@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { StyleSheet, View, Pressable, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useHabits, type HabitType } from '@/context/habits';
 import { useChallenges } from '@/context/challenges';
+import { useOnboarding } from '@/context/onboarding';
 import { useThemeColor } from '@/hooks/use-theme-color';
 
 const SUGGESTED = [
@@ -31,6 +31,7 @@ export default function OnboardingScreen() {
   const [selected, setSelected] = useState<number[]>([]);
   const { addHabit, removeHabit, habits } = useHabits();
   const { createChallenge } = useChallenges();
+  const { markComplete } = useOnboarding();
   const tint = useThemeColor({}, 'tint');
   const buttonTextColor = useThemeColor({}, 'buttonText');
   const cardBg = useThemeColor(
@@ -50,12 +51,12 @@ export default function OnboardingScreen() {
       ids.push(h.id);
     }
     if (ids.length > 0) createChallenge('3일 킥스타트', ids, 3);
-    await AsyncStorage.setItem('onboarding_complete', 'true');
+    await markComplete();
     router.replace('/(tabs)');
   };
 
   const skip = async () => {
-    await AsyncStorage.setItem('onboarding_complete', 'true');
+    await markComplete();
     router.replace('/(tabs)');
   };
 

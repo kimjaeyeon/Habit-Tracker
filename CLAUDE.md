@@ -98,3 +98,64 @@ Both contexts persist to AsyncStorage and include migration functions for schema
 **참고:**
 - 웹 개발 서버는 백그라운드 실행 중이었음(세션 종료 시 정리됨). 재실행: `npm run web` → 크롬 `http://localhost:8081`. 크롬 직접 실행: `Start-Process chrome http://localhost:8081`.
 - 한국어 기본 습관 확인: 관리 탭 → 개발자 도구 → "온보딩 초기화" 또는 "모든 데이터 삭제"(기존 캐시가 영어일 수 있음).
+
+### 2026-07-18 — /init 정리 + GitHub 공개 push + Supabase 통합 브레인스토밍(진행중)
+
+**한 일:**
+1. **`/init`** — 프로젝트 `CLAUDE.md`에 "Conventions & gotchas" 섹션 추가(한글 UI vs 영어 내부값, UTC `getToday()` 날짜 버그, AsyncStorage 키·마이그레이션, 개발자도구, 챌린지 모델). Commands/Architecture는 코드 대조 후 정확함 확인.
+2. **크롬 실행 검증** — `npm run web` → `http://localhost:8081`. 한글 UI·`ko-KR` 날짜·기본 습관 5개 정상, 콘솔 에러 0(무해 경고 3개). (`CI=1`이라 핫리로드 꺼짐, 이후 서버 종료됨.)
+3. **GitHub 저장소 생성 + push** — 기존 `origin`이 **남의 저장소 `nickjwells/Habit-Tracker`**(강의/템플릿 기반)를 가리키고 있었음 → 사용자 저장소 **`kimjaeyeon/Habit-Tracker`(Public)** 로 교체. 세션 잡파일(`.omc/`, `.playwright-mcp/`, `habit-tracker-web.png`) `.gitignore` 처리. 문서 커밋(`2c565bf`) 후 **전체 히스토리 push**. (GCM 브라우저 로그인, 낡은 자격증명 먼저 삭제.)
+   - ⚠️ 깨진 커밋 메시지 `1f011ac "Localiz)"` 원격에 그대로 있음("그냥 push" 요청). 수정하려면 히스토리 재작성+force push(솔로 새 저장소라 안전).
+   - ⚠️ Public이므로 세션 로그·`docs/superpowers/specs`가 공개됨(사용자 동의함).
+4. **현재 Supabase 미연동 확인** — AsyncStorage 전용, 백엔드·계정 없음.
+5. **Supabase 통합 브레인스토밍 시작**(superpowers:brainstorming). 요청받은 기능 = DB + 로컬 캐싱(빠릿함) + 사용자 인증.
+
+**결정사항:**
+- 핵심 원칙: **오프라인 우선(optimistic) + 백그라운드 동기화.** 지금의 "빠릿함"은 로컬 즉시 쓰기에서 나오므로, 토글마다 네트워크 `await` 금지. 로컬 캐시가 즉시 소스, Supabase는 뒤에서 동기화.
+- 3개 하위시스템(**인증 / 클라우드 DB+RLS / 오프라인 동기화**)으로 분해, 각각 스펙→계획→Codex 구현.
+- **빌드 순서: 인증부터.**
+- **로그인 방식: 이메일 + 비밀번호**(Expo Go에서 딥링크/리다이렉트 설정 불필요, 가장 간단).
+- 보안(Public 저장소): `anon key`는 클라이언트 OK(단 **RLS** 필수), **`service_role key` 커밋 금지**, `.env`는 gitignore.
+
+**다음 할 일 (여기서 재개):**
+- [ ] **인증 브레인스토밍 이어가기** — 남은 질문: (Q2) 로그인 필수(앱 전체 게이팅) vs 게스트 모드 허용? (Q3) Supabase 계정/프로젝트 이미 만들었나?
+- [ ] 이후: 인증 접근법 2~3개 제안 → 설계 섹션 승인 → 스펙 `docs/superpowers/specs/2026-07-18-supabase-auth-design.md` 작성 → 사용자 리뷰 → superpowers:writing-plans → Codex 구현.
+- [ ] (phase 2/3) 클라우드 데이터 레이어 + 오프라인 동기화 + **기존 로컬 데이터 → 계정 이전(migration)**.
+- [ ] (선택) 깨진 커밋 메시지 `1f011ac` 정정.
+- [ ] (별건·보류) UTC 날짜 버그.
+
+> 저장 위치: 이 세션 요약은 OMC 위키(`.omc/wiki/`, git-ignore)에도 저장됨 — `2026-07-18-session-…`, `supabase-integration-plan` 페이지.
+
+### 2026-07-19 — Supabase 인증 Phase 1: 설계 완료 + Codex 구현 + 리뷰 + 웹/DB 검증 완료
+
+**한 일:**
+1. **인증 설계 스펙 확정** — `docs/superpowers/specs/2026-07-18-supabase-auth-design.md`(286줄). 결정: 이메일+비번, **로그인 필수(앱 전체 게이팅, 게스트 없음)**, 이메일 확인 **OFF**(가입 즉시 로그인), `(auth)` 라우트 그룹 + 리다이렉트 게이트. Supabase 프로젝트 생성 완료.
+2. **`.env.local` 생성** — 실제 URL + **publishable(anon) 키**. `.gitignore`의 `.env*.local`로 무시됨 검증(`git check-ignore`). `service_role` 키는 안 씀.
+3. **Codex가 Phase 1 인증 구현**(staged, 미커밋) — `lib/supabase.ts`, `context/auth.tsx`(AuthProvider/useAuth), `components/auth-form.tsx`, `app/(auth)/{_layout,sign-in,sign-up}.tsx`, `app/_layout.tsx`(게이팅), `app/(tabs)/explore.tsx`(로그아웃).
+4. **Claude 코드 리뷰(code-review 스킬, high)** — 5건 발견 → 지침 문서 `docs/superpowers/specs/2026-07-19-supabase-auth-review-CODEX-instructions.md` 작성.
+   - #1[높음] **재로그인 시 온보딩 재노출**(onboardingDone 마운트 1회만 읽어 stale) / #2[중] getSession 실패 시 무한 스플래시 / #3[낮음] 이메일확인 ON 시 무반응 / #4[낮음] (tabs) 한 프레임 깜빡임 / #5[낮음] 웹 AppState 불필요.
+5. **Codex 1차 수정** — #1을 근본해결(A)로: 새 `context/onboarding.tsx`(반응형 OnboardingProvider, `markComplete()`가 저장+상태 동시 갱신) + 게이트가 이 상태 사용, fragile `initialGateComplete` ref 제거. #2(catch/finally), #5(Platform.OS web 가드)도 반영. #3·#4는 보류(선택). → **tsc/lint 클린, 회귀 없음** 확인.
+6. **웹 구동 검증에서 차단 버그(C1) 발견** — `npm run web`이 부팅 중 크래시(exit 7). 원인: `app.json` `web.output:"static"`(Expo Router가 Node에서 SSR) + `lib/supabase.ts`가 import 시점에 supabase 클라이언트 생성 → GoTrueClient가 즉시 AsyncStorage(web=`window.localStorage`) 읽음 → Node엔 `window` 없어 `ReferenceError`. **정적 분석(tsc/lint)으론 못 잡는 회귀.** 지침 문서에 C1 추가.
+7. **Codex가 C1 수정(A안)** — `app.json` `web.output` `"static"`→**`"single"`**(SPA, SSR 제거). → 서버 재구동: **크래시 없이 부팅**, `λ node/render.js` SSR 번들 사라짐, Playwright로 `/sign-in` 게이팅+한글 로그인 UI 렌더 확인, **콘솔 에러 0**.
+8. **Supabase DB 저장 검증(2중 확인)** — (a) anon 키로 Auth API 직접 테스트 가입 → 서버 UUID·created_at·토큰 발급 확인. (b) **사용자가 Supabase 대시보드(Authentication→Users) 스크린샷** → 본인 가입 계정 `dennis439785@gmail.com`(UID `969b5231-…`)이 실제 저장됨 확인. 테스트 계정 UID가 API 응답과 일치(교차검증).
+
+**결정사항:**
+- C1 수정 = **`web.output: "single"`**(이 앱은 로그인 뒤 개인용이라 SSR/SEO 불필요). 정적 유지 원하면 대안 B(supabase.ts에서 `Platform.OS==='web' && typeof window==='undefined'`일 때 메모리 스토리지)—문서에 남김.
+- 검증 방식: **정적(tsc/lint) → 웹 런타임 구동 → DB 실제 확인**까지 3단. (런타임 구동이 C1 잡음 — 앞으로도 실행 검증 중시.)
+
+**진행 상태:**
+- [x] 인증 설계 스펙 / `.env.local` / Codex 구현(Phase 1)
+- [x] Claude 리뷰(5건) + Codex 수정(#1·#2·#5 + C1)
+- [x] 웹 런타임 검증(부팅/게이팅/로그인 UI/콘솔0) + Supabase DB 저장 확인
+- [ ] **미커밋** — 인증 구현 + 온보딩 리팩터 + C1 + 리뷰 문서 전부 staged/untracked 상태
+
+**다음 할 일:**
+- [ ] **#1(재로그인 온보딩) 인앱 플로우 런타임 재현 검증** — 가입→온보딩완료→로그아웃→재로그인→온보딩 안 뜨고 탭 진입. (테스트 계정 1개 더 생김)
+- [ ] **커밋** — 인증 구현 + `context/onboarding.tsx` + C1(app.json) + 리뷰/설계 문서. (커밋 메시지 예: `Add Supabase email/password auth (Phase 1)`)
+- [ ] Supabase 대시보드에서 **테스트 계정 `claude-verify-1784448858@example.com` 삭제**.
+- [ ] (phase 2) 클라우드 데이터 레이어(habits/completions/challenges `user_id`별 + RLS) → (phase 3) 오프라인 동기화 + 로컬 데이터 계정 이전.
+- [ ] (선택) 깨진 커밋 메시지 `1f011ac` 정정 / (별건·보류) UTC 날짜 버그.
+
+**참고:**
+- Supabase 프로젝트 ref `ytfmtzrocfuxvhxflkqf` / Users 대시보드 `https://supabase.com/dashboard/project/ytfmtzrocfuxvhxflkqf/auth/users`.
+- 웹 재구동: `npm run web` → `http://localhost:8081`(이메일확인 OFF라 가입 즉시 로그인). 세션 종료 시 dev 서버 정리됨.
